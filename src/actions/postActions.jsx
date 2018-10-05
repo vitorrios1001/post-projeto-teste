@@ -16,9 +16,23 @@ export const processandoPost = (bool) =>{
     }
 }
 
+export const processandoComentario = (bool) => {
+    return {
+        type: a.PST_PROCESSANDO_COMENTARIO,
+        payload: bool
+    }
+}
+
 export const getPostsSuccess = (response) =>{
     return {
         type: a.PST_GET_POST,
+        payload: response
+    }
+}
+
+export const getPostComments = (response) => {
+    return{
+        type: a.PST_GET_COMENTARIO,
         payload: response
     }
 }
@@ -123,15 +137,29 @@ export const putPost = () =>{
 
 export const getPostById = (id) =>{
     return dispatch => {
-        dispatch(processandoPost(true))
-
+        dispatch([processandoPost(true)])
+        
         axios.get(BASE_URL+'posts/'+id)
             .then(res => {
                 //console.log(res)
                 dispatch([
                     processandoPost(false),                    
-                    initialize('postForm', res.data, true)                    
+                    initialize('postForm', res.data, true),
+                    processandoComentario(true)                    
                 ])
+
+                axios.get(BASE_URL+'comments?postId='+id)
+                    .then(resComent =>{
+                        dispatch([
+                            processandoComentario(false),
+                            getPostComments(resComent)
+                        ])
+                        toastr.success('Comentarios', `Comentários carregados`, { timeOut: 4000 })
+                    }).catch(errComent => {
+                        dispatch(processandoComentario(false))
+                        toastr.error('Comentarios', `Erro ao carregar os comentários`, { timeOut: 4000 })
+                    })
+
                 toastr.success('Post', `Post carregado`, { timeOut: 4000 })
                 hashHistory.push(`/post/editar/`+id)
             }).catch(err =>{

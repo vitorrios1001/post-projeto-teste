@@ -12,8 +12,7 @@ export class PostForm extends Component {
         const { handleSubmit } = this.props;
 
         return (
-            <div>
-                <h3>Formulario</h3>
+            <div>                
                 <form onSubmit={handleSubmit} >
                     <Spin spinning={this.props.post.processandoPosts} tip="Carregando aguarde...">
                         <label className="control-label">Titulo: <span className="text-danger">*</span></label>

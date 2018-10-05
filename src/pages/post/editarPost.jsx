@@ -6,6 +6,7 @@ import Form from './form'
 
 import { putPost, getPostById } from './../../actions/postActions'
 import { Spin } from 'antd'
+import GridComentarios from './gridComentarios'
 
 export class EditarPost extends Component {
 
@@ -13,23 +14,37 @@ export class EditarPost extends Component {
         if (this.props.params.id) {
             this.props.getPostById(this.props.params.id)
         }
-        
+
     }
 
     render() {
+        console.log(this.props)
         return (
             <div style={divGeral}>
                 <a href="#/post" >Voltar</a>
                 <h2>Editar Post</h2>
 
                 {
-                    this.props.post.processandoPost
+                    this.props.post.processandoPosts
                         ? <Spin size="large" />
-                        : 
+                        :
                         <div style={divCadastro} >
                             <Form onSubmit={this.props.putPost} />
                         </div>
                 }
+                <h3>Comentários</h3>
+                    
+                <Spin spinning={this.props.post.processandoComentarios} >
+                    
+                    <GridComentarios />
+                    {/* {
+                        this.props.post.comentarios.map(c => {
+                            return (
+                                <p key={c.id} >{c.name}</p>
+                            )
+                        })
+                    } */}
+                </Spin>
             </div>
         )
     }
