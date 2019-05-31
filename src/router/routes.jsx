@@ -1,7 +1,5 @@
 import React from 'react'
 import { Router, Route, IndexRoute } from 'react-router'
-import { toastr } from 'react-redux-toastr'
-import _ from 'lodash'
 
 import PostIndex from '../pages/post/index'
 import Main from '../theme/main'

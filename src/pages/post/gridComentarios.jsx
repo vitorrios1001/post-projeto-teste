@@ -3,8 +3,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 
-import { getPosts, getPostById, delPost } from './../../actions/postActions'
-import { List, Avatar, Tooltip, Spin } from 'antd'
+import { getPosts, getPostById, } from './../../actions/postActions'
+import { List, Avatar, Tooltip } from 'antd'
 
 class GridComentarios extends Component {
 
@@ -32,7 +32,7 @@ class GridComentarios extends Component {
                             </button>
                         </Tooltip>
                         <Tooltip title="Excluir">
-                            <button onClick={() => this.props.delPost(record.id)} >
+                            <button onClick={() => alert(record.id)} >
                                 <span>Excluir</span>
                             </button>
                         </Tooltip>
@@ -47,8 +47,6 @@ class GridComentarios extends Component {
     }
 
     render() {
-
-        const { processandoPosts, posts } = this.props.post
 
         return (
             <div>
@@ -70,18 +68,6 @@ class GridComentarios extends Component {
     }
 }
 
-const divCenter = {
-    justifyContent: 'center'
-}
-
-const divTable = {
-    marginTop: '50px',
-    marginLeft: '0px',
-    marginRight: '50px',
-    marginFooter: '50px'
-}
-
-
 const mapStateToProps = state => ({
     post: state.post
 })
@@ -89,7 +75,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => bindActionCreators({
     getPosts,
     getPostById,
-    delPost
+    
 }, dispatch)
 
 
