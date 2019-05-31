@@ -9,7 +9,7 @@ import { toastr } from "react-redux-toastr"
 
 const BASE_URL = 'https://jsonplaceholder.typicode.com/'
 
-export const processandoPost = (bool) =>{
+export const processandoPost = (bool) => {
     return {
         type: a.PST_PROCESSANDO_POST,
         payload: bool
@@ -23,41 +23,35 @@ export const processandoComentario = (bool) => {
     }
 }
 
-export const getPostsSuccess = (response) =>{
-    return {
-        type: a.PST_GET_POST,
-        payload: response
-    }
-}
+export const getPostsSuccess = (response) => ({
+    type: a.PST_GET_POST,
+    payload: response
+})
 
 export const getPostComments = (response) => {
-    return{
+    return {
         type: a.PST_GET_COMENTARIO,
         payload: response
     }
 }
 
-export const getPosts = () => {
-    return dispatch =>{
+export const getPosts = () => async dispatch => {
+    try {
         dispatch(processandoPost(true))
-        
-        axios.get(BASE_URL +'posts/')
-            .then(res =>{
-                //console.log(res.data)
-                dispatch([
-                    getPostsSuccess(res),
-                    processandoPost(false)
-                ])
-                toastr.success('Post', `Posts carregados`, { timeOut: 4000 })
-            }).catch(err =>{
-                //console.log(err)
-                toastr.error('Post', `Erro ao carregar os Posts`, { timeOut: 4000 })
-                dispatch(processandoPost(false))
-            })
+
+        const { data } = await axios.get(`${BASE_URL}posts`)
+
+        dispatch([
+            getPostsSuccess(data),
+            processandoPost(false)
+        ])
+    } catch (error) {
+        dispatch(processandoPost(false))
+        toastr.error('Post', `Erro ao carregar os Posts`, { timeOut: 4000 })
     }
 }
 
-export const delPost = (id) =>{
+export const delPost = (id) => {
     return (dispatch) => {
         swal({
             title: "Post",
@@ -65,55 +59,48 @@ export const delPost = (id) =>{
             icon: "warning",
             buttons: true,
             dangerMode: false,
-          })
-          .then((willDelete) => {
-            if (willDelete) {
-              dispatch(delPostConfirmed(id))                
-            } else {
-              swal("Operação cancelada pelo usuário!");
-            }
-          });
-    }    
-}
-
-export const delPostConfirmed = (id) =>{
-    return (dispatch) => {
-        
-        dispatch(processandoPost(true))
-        
-        axios.delete(BASE_URL+'posts/'+id)
-        .then(res =>{
-            console.log('Deletado', res)
-            dispatch(processandoPost(false))
-            swal({
-                title: "Post",
-                text: "Post Excluído com sucesso!",
-                icon: "success"
-            })
-            hashHistory.push(`/post`)
-            
-        }).catch(err =>{                
-            console.log('Erro na deleção', err)
-            dispatch(processandoPost(false))
-            swal({
-                title: "Post",
-                text: "Erro ao excluir o post!",
-                icon: "error"
-            })
         })
+            .then((willDelete) => {
+                if (willDelete) {
+                    dispatch(delPostConfirmed(id))
+                } else {
+                    swal("Operação cancelada pelo usuário!");
+                }
+            });
     }
 }
 
-export const putPost = () =>{
-    return (dispatch, getState) =>{
+export const delPostConfirmed = (id) => async (dispatch, getState) => {
+    try {
+        const { post: { posts } } = getState();
+
+        dispatch(processandoPost(true));
+        await axios.delete(`${BASE_URL}posts/${id}`);
+
+        const newList = posts.filter(item => item.id !== id);
+
+        dispatch([
+            getPostsSuccess(newList),
+            processandoPost(false)
+        ])
+
+    } catch (error) {
+        dispatch(processandoPost(false))
+        swal({ title: "Post", text: "Erro ao excluir o post!", icon: "error" })
+    }    
+}
+
+
+export const putPost = () => {
+    return (dispatch, getState) => {
         dispatch(processandoPost(true))
 
         const { form } = getState()
-        let values = form.postForm.values 
+        let values = form.postForm.values
         let post = values
 
-        axios.put(BASE_URL+'posts/'+post.id, post)
-            .then(res =>{
+        axios.put(BASE_URL + 'posts/' + post.id, post)
+            .then(res => {
                 console.log('Atualizado', res)
                 dispatch(processandoPost(false))
                 swal({
@@ -122,8 +109,8 @@ export const putPost = () =>{
                     icon: "success"
                 })
                 hashHistory.push(`/post`)
-                
-            }).catch(err =>{                
+
+            }).catch(err => {
                 console.log('Erro a Atualização', err)
                 dispatch(processandoPost(false))
                 swal({
@@ -135,21 +122,21 @@ export const putPost = () =>{
     }
 }
 
-export const getPostById = (id) =>{
+export const getPostById = (id) => {
     return dispatch => {
         dispatch([processandoPost(true)])
-        
-        axios.get(BASE_URL+'posts/'+id)
+
+        axios.get(BASE_URL + 'posts/' + id)
             .then(res => {
                 //console.log(res)
                 dispatch([
-                    processandoPost(false),                    
+                    processandoPost(false),
                     initialize('postForm', res.data, true),
-                    processandoComentario(true)                    
+                    processandoComentario(true)
                 ])
 
-                axios.get(BASE_URL+'comments?postId='+id)
-                    .then(resComent =>{
+                axios.get(BASE_URL + 'comments?postId=' + id)
+                    .then(resComent => {
                         dispatch([
                             processandoComentario(false),
                             getPostComments(resComent)
@@ -161,10 +148,10 @@ export const getPostById = (id) =>{
                     })
 
                 toastr.success('Post', `Post carregado`, { timeOut: 4000 })
-                hashHistory.push(`/post/editar/`+id)
-            }).catch(err =>{
+                hashHistory.push(`/post/editar/` + id)
+            }).catch(err => {
                 dispatch([
-                    processandoPost(false)                    
+                    processandoPost(false)
                 ])
                 toastr.error('Post', `Erro ao carregar o Post`, { timeOut: 4000 })
                 hashHistory.push(`post/`)
@@ -172,36 +159,24 @@ export const getPostById = (id) =>{
     }
 }
 
-export const addPost = (post) =>{
-    console.log(post)
-    return dispatch => {
+export const addPost = post => async (dispatch, getState) => {
+    try {
+        const { post: { posts } } = getState();
 
         dispatch(processandoPost(true));
+        const { data } = await axios.post(`${BASE_URL}posts`, { ...post, userId: 1 })
 
-        axios.post(BASE_URL+'posts', post)
-            .then(res =>{
-                console.log('AddPostSuccess', res)
-                dispatch([                    
-                    getPosts(),
-                    processandoPost(false)
-                ])    
-                swal({
-                    title: "Post",
-                    text: "Post adicionado com sucesso!",
-                    icon: "success"
-                })            
-                hashHistory.push(`/post`)
-            }).catch(err =>{
-                console.log('AddPostFail', err)
-                dispatch([
-                    processandoPost(false)
-                ])
-                swal({
-                    title: "Post",
-                    text: "Erro ao adicionar o post!",
-                    icon: "error"
-                })
-                hashHistory.push(`/post`)
-            })
+        const newPostsList = [data, ...posts];
+
+        dispatch([
+            getPostsSuccess(newPostsList),
+            processandoPost(false),
+        ])
+
+        swal({ title: "Post", text: "Post adicionado com sucesso!", icon: "success" })
+    } catch (error) {
+        console.log(error)
+        dispatch(processandoPost(false))
+        swal({ title: "Post", text: "Erro ao adicionar o post!", icon: "error" })
     }
 }

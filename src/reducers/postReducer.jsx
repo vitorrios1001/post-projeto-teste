@@ -14,18 +14,13 @@ export default (state = INITIAL_STATE, action) => {
     switch (type) {
         case ActionTypes.PST_PROCESSANDO_POST:
             return{ ...state, processandoPosts: payload }
-            break;                    
         case ActionTypes.PST_GET_POST:            
-            return{ ...state, posts: payload.data }
-            break;              
+            return{ ...state, posts: payload }
         case ActionTypes.PST_PROCESSANDO_COMENTARIO:
             return{ ...state, processandoComentarios: payload }
-            break;                    
         case ActionTypes.PST_GET_COMENTARIO:            
-            return{ ...state, comentarios: payload.data }
-            break;
+            return{ ...state, comentarios: payload }
         default:
             return { ...state };
-            break;
     }
 }

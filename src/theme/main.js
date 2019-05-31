@@ -1,35 +1,16 @@
 import React, { Component } from 'react';
-//import './App.css';
-
 import { connect } from 'react-redux'
-import { bindActionCreators } from 'redux'
 
-import { hashHistory } from 'react-router'
-
-import Routes from './../router/routes'
 import Messages from './messages'
 
 class Main extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      post: {
-        title: '',
-        body: ''
-      }
-    }
-  }
-
+  
   render() {
-
-    //const { processandoPosts, posts, errosPosts } = this.props.post
-    //const isEmpty = this.props.post.posts.length === 0
 
     return (
       <div style={divGeral}>
 
-        <h2>Cabeçalho</h2>
+        <h2>Header</h2>
         <Messages />
         <div id="wrapper">
           <div id="page-wrapper" className="gray-bg">
@@ -48,14 +29,12 @@ const divGeral = {
   marginFooter: '20px'
 }
 
-const mapStateToProps = state => ({
-  //post: state.post
+const mapStateToProps = () => ({
+
 })
 
-const mapDispatchToProps = dispatch => bindActionCreators({
-  //getPosts,
-  //addPost
-}, dispatch)
+const mapDispatchToProps = {
 
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(Main)
