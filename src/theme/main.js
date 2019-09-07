@@ -1,18 +1,20 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
-
+import Header from './Header'
 import Messages from './messages'
+
+import './styles.css'
 
 class Main extends Component {
   
   render() {
 
     return (
-      <div style={divGeral}>
+      <div >
 
-        <h2>Header</h2>
+        <Header />
         <Messages />
-        <div id="wrapper">
+        <div className="my-wrapper">
           <div id="page-wrapper" className="gray-bg">
             {this.props.children}
           </div>

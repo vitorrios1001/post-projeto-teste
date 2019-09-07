@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import { connect } from 'react-redux'
 
 import { getPosts, addPost, delPostConfirmed, putPost, getCommentsOfPost } from './../../actions/postActions'
@@ -48,7 +48,12 @@ class Index extends Component {
         this.props.delPostConfirmed(idPost)
     }
 
-    const openAndCloseModal = () => this.setState({ visibleModal: !visibleModal });
+    const openAndCloseModal = () => {
+      if (visibleModal)
+        this.setState({ item: { title: '', body: '' } })
+
+      this.setState({ visibleModal: !visibleModal })
+    }
     const openComments = () => this.setState({ showComments: !showComments });
 
     const onChangeTitle = (e) => this.setState({ item: { ...item, title: e.target.value } })

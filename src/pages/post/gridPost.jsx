@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Tooltip, Spin, Icon } from 'antd'
+import { Table, Tooltip, Spin, Icon, Button } from 'antd'
 
 const GridPosts = ({ posts, loading, edit, deletePost, getComments }) => (
     <Spin size="large" spinning={loading} tip="Carregando aguarde..." >
@@ -21,24 +21,36 @@ const GridPosts = ({ posts, loading, edit, deletePost, getComments }) => (
                         return (
                             <div>
                                 <Tooltip title="Alterar">
-                                    <Icon
-                                        type='edit'
-                                        style={{ marginRight: 10 }}
+                                    <Button
                                         onClick={() => edit(record)}
-                                    />
-                                </Tooltip>
-                                <Tooltip title="Excluir">
-                                    <Icon
-                                        type='delete'
-                                        style={{ marginRight: 10 }}
-                                        onClick={() => deletePost(record.id)}
-                                    />
+                                        style={styles.button}
+                                    >
+                                        <Icon style={{ marginLeft: -5 }} type='edit' />
+                                    </Button>
                                 </Tooltip>
                                 <Tooltip title="Comentários">
-                                    <Icon
-                                        type='message'
+                                    <Button
                                         onClick={() => getComments(record.id)}
-                                    />
+                                        style={styles.button}
+                                        type='dashed'
+                                    >
+                                        <Icon
+                                            type='message'
+                                            style={styles.icon}
+                                        />
+                                    </Button>
+                                </Tooltip>
+                                <Tooltip title="Excluir">
+                                    <Button
+                                        style={styles.button}
+                                        type='danger'
+                                        onClick={() => deletePost(record.id)}
+                                    >
+                                        <Icon
+                                            type='delete'
+                                            style={styles.icon}
+                                        />
+                                    </Button>
                                 </Tooltip>
                             </div>
                         )
@@ -48,5 +60,15 @@ const GridPosts = ({ posts, loading, edit, deletePost, getComments }) => (
         />
     </Spin>
 )
+
+const styles = {
+    button: {
+        width: 10,
+        marginLeft: 5,
+    },
+    icon: {
+        marginLeft: -6
+    },
+}
 
 export default GridPosts;
